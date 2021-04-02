@@ -5,13 +5,13 @@ import { Doughnut } from "react-chartjs-2";
 let realTime = null;
 let myVotingChannel = null;
 class Dashboard extends Component {
- 
   state = {
     votes: {
-      barcelona: 0,
-      realMadrid: 0,
-      juventus: 0,
-    },
+      one: 0,
+      two: 0,
+      three: 0,
+      five: 0
+    }
   };
 
   componentDidMount() {
@@ -23,30 +23,31 @@ class Dashboard extends Component {
         this.setState({
           votes: {
             ...this.state.votes,
-            [msg.data]: this.state.votes[msg.data] + 1,
-          },
+            [msg.data]: this.state.votes[msg.data] + 1
+          }
         });
       });
     });
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     myVotingChannel.unsubscribe();
     realTime.connection.off();
   }
   render() {
     const data = {
-      labels: ["Barcelona", "Real Madrid", "Juventus"],
+      labels: ["1", "2", "3", "5"],
       datasets: [
         {
           barPercentage: 1,
           backgroundColor: ["#FF6384", "#4BC0C0", "#FFCE56"],
           data: [
-            this.state.votes.barcelona,
-            this.state.votes.realMadrid,
-            this.state.votes.juventus,
-          ],
-        },
-      ],
+            this.state.votes.one,
+            this.state.votes.two,
+            this.state.votes.three,
+            this.state.votes.five
+          ]
+        }
+      ]
     };
 
     const options = {
@@ -54,11 +55,11 @@ class Dashboard extends Component {
         display: true,
         text: "Voting Dashboard",
         fontSize: 25,
-        fontColor: "#CB0F33",
+        fontColor: "#CB0F33"
       },
       layout: {
         padding: {
-          top: 50,
+          top: 50
         }
       }
     };

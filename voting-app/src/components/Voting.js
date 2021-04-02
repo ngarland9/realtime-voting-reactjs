@@ -1,25 +1,26 @@
 import React, { Component } from "react";
 import * as Ably from "ably";
 import "./voting.css";
-import Dashboard from './Dashboard';
+import Dashboard from "./Dashboard";
 
 let realTime = null;
-let myVotingChannel= null;
+let myVotingChannel = null;
 class Voting extends Component {
   state = {
     cards: [
-      { id: 1, name: "Barcelona", value: "barcelona" },
-      { id: 2, name: "Real Madrid", value: "realMadrid" },
-      { id: 3, name: "Juventus", value: "juventus" },
+      { id: 1, name: "1", value: "one" },
+      { id: 2, name: "2", value: "two" },
+      { id: 3, name: "3", value: "three" },
+      { id: 4, name: "5", value: "five" }
     ],
-    flipped: null,
+    flipped: null
   };
 
-  componentDidMount(){
+  componentDidMount() {
     realTime = new Ably.Realtime({ authUrl: "/publish" });
     realTime.connection.once("connected", () => {
-       // create the channel object
-       myVotingChannel = realTime.channels.get("Voting-App");
+      // create the channel object
+      myVotingChannel = realTime.channels.get("Voting-App");
     });
   }
   clickHandler = (card) => {
@@ -27,23 +28,22 @@ class Voting extends Component {
       return;
     }
 
-    
-      myVotingChannel.publish("vote", card.value, (err) => {
-        console.log("err", err);
-      });
+    myVotingChannel.publish("vote", card.value, (err) => {
+      console.log("err", err);
+    });
 
     this.setState({
-      flipped: card,
+      flipped: card
     });
   };
-  componentWillUnmount(){
+  componentWillUnmount() {
     realTime.connection.off();
   }
   render() {
     const hasVoted = !!this.state.flipped;
     return (
       <React.Fragment>
-        <h1 className="voting-heading">Vote for your favourite team</h1>
+        <h1 className="voting-heading">Select a score!</h1>
         <div className="voting-main">
           {this.state.cards.map((card) => {
             return (
@@ -55,15 +55,20 @@ class Voting extends Component {
                   onClick={() => this.clickHandler(card)}
                 >
                   <div className="front">{card.name}</div>
-                  <div className="back">Thanks for voting </div>
+                  <div className="back">Score Recorded</div>
                 </div>
               </section>
             );
           })}
         </div>
-        <button className="refresh-btn" onClick={()=>this.setState({flipped:null})}>Vote Gain</button>
-        <p><strong>You can vote again by clicking this button to see this demo working.</strong></p>
-        <Dashboard/>
+        <button
+          className="refresh-btn"
+          onClick={() => this.setState({ flipped: null })}
+        >
+          Vote Again
+        </button>
+
+        <Dashboard />
       </React.Fragment>
     );
   }
